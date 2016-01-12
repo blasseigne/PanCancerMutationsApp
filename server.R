@@ -14,7 +14,7 @@ shinyServer(function(input, output) {
   #  2) Its output type is a plot
   
   
-  #Returns the requested data for the CADD distribution histogram
+#Returns the requested data for the CADD distribution histogram
   datasetInput <- reactive({
     switch(input$distributionData,
            "All"=na.omit(kandothAnno2$v13CADDscaled),
@@ -25,17 +25,16 @@ shinyServer(function(input, output) {
            "Silent"=na.omit(kandothAnno2[kandothAnno2$Variant_Classification=="Silent",]$v13CADDscaled), 
            "Splice Site"=na.omit(kandothAnno2[kandothAnno2$Variant_Classification=="Splice_Site",]$v13CADDscaled))
   })
-  #generate summary of the distribution
+#generate summary of the distribution
   output$summary<-renderPrint({
     distributionData<-datasetInput()
     summary(distributionData)
   })
-  
-  #CADD distribution histogram
+#CADD distribution histogram
   output$scaledCADD <- renderPlot({
     distributionData    <- datasetInput()  # R object in loaded data
     bins <- seq(min(distributionData), max(distributionData), length.out = input$bins + 1)
-    # draw the histogram with the specified number of bins
+# draw the histogram with the specified number of bins
     hist(distributionData, breaks=bins, col = 'darkgray', border = 'white', xlab="CADD", main="CADD Mutation Frequency")
   })
   
