@@ -28,7 +28,7 @@ shinyServer(function(input, output) {
     distributionData    <- datasetInput()  # R object in loaded data
     bins <- seq(min(distributionData), max(distributionData), length.out = input$bins + 1)
 # draw the histogram with the specified number of bins
-    hist(distributionData, breaks=bins, col = 'darkgray', border = 'white', xlab="CADD", main="CADD Mutation Frequency")
+    hist(distributionData, breaks=bins, col = 'blue', border = 'white', xlab="CADD", main="CADD Mutation Frequency")
   })
   
   #Variant Classification barplot
