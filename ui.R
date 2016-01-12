@@ -65,7 +65,7 @@ shinyUI(fluidPage(
                                       choices=list("All", "Missense", "Nonsense", "Nonstop", "RNA", "Silent", "Splice Site"),
                                       selected="All")),
                    column(2, offset=0.5, 
-                          sliderInput("bins", "Number of bins:", min=1, max=50, value=30)),
+                          sliderInput("bins", "Number of bins:", min=1, max=100, value=50)),
                    column(7, offset=0.5,
                           h4("Variant Summary:"),
                           verbatimTextOutput("summary")))),

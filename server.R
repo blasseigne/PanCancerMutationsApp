@@ -1,5 +1,5 @@
 library(shiny)
-library(plyr)
+library(dplyr)
 load("kandothAnno.Rdata")
 load("numBySample.Rdata")
 
@@ -71,8 +71,11 @@ shinyServer(function(input, output) {
   
   output$cancerCount<-renderText({paste("Number of Cancers Represented:", length(unique(kandothAnno2$Cancer))-1)}) #-1 accounts for "NA"
   
-  output$cancerSummary<-renderDataTable({count(kandothAnno2, 'Cancer')})
+  output$cancerSummary<-renderDataTable({count_(kandothAnno2, 'Cancer')})
   
-  geneCount<-count(kandothAnno2, 'Gene.x')
-  output$geneSummary<-renderDataTable({geneCount[order(-geneCount$freq),]}, options=list(lengthMenu=c(10, 20, 30, 40, 50), pageLength=10))
+  geneCount<-count_(kandothAnno2, 'Gene.x')
+  geneCount<-geneCount[-1,]
+  names(geneCount)[1]<-"Gene"
+  names(geneCount)[2]<-"Mutations"
+  output$geneSummary<-renderDataTable({geneCount[order(-as.numeric(geneCount$Mutations)),]}, options=list(lengthMenu=c(10, 20, 30, 40, 50), pageLength=10))
 })
