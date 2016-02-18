@@ -28,7 +28,7 @@ shinyServer(function(input, output) {
     distributionData    <- datasetInput()  # R object in loaded data
     bins <- seq(min(distributionData), max(distributionData), length.out = input$bins + 1)
 # draw the histogram with the specified number of bins
-    hist(distributionData, breaks=bins, col = 'blue', border = 'white', xlab="CADD", main="CADD Mutation Frequency")
+    hist(distributionData, breaks=bins, col = 'blue', border = 'white', xlab="CADD", main="C Score Frequency")
   })
   
   #Variant Classification barplot
@@ -48,8 +48,9 @@ shinyServer(function(input, output) {
   #Samples by Cancer Pie Chart
   numByCancer<-table(numBySample$V3)
   numByCancerDF<-as.data.frame(numByCancer)
+  colnames(numByCancerDF)[1]<-"Cancer"
   #pie chart
-  output$pieCancer<-renderPlot({ggplot(numByCancerDF, aes(x="", y=Freq, fill=Var1))+
+  output$pieCancer<-renderPlot({ggplot(numByCancerDF, aes(x="", y=Freq, fill=Cancer))+
       geom_bar(width=1, stat="identity")+
       theme(panel.background=element_blank())+
       coord_polar("y", start=0)+
@@ -59,17 +60,17 @@ shinyServer(function(input, output) {
       scale_y_discrete(name="")})
   
   #numBySample is the number of mutations by each sample, annotated with tumor type
-  small<-subset(numBySample, numBySample$Freq<3000)
-  output$bp4<-renderPlot({ggplot(small, aes(V3, Freq))+
+  #small<-subset(numBySample, numBySample$Freq<3000)
+  output$bp4<-renderPlot({ggplot(numBySample, aes(V3, log10(Freq)))+
       geom_jitter()+
       theme(axis.text.x=element_text(angle=90, hjust=1))+
-      labs(x="Cancer", y="# of Variants per Sample")})
+      labs(x="Cancer", y="log10(# of Variants per Sample)")})
   
   output$variantCount<-renderText({paste("Total Number of Variants:", nrow(kandothAnno2))})
   
   output$sampleCount<-renderText({paste("Total Number of Samples:", length(unique(kandothAnno2$ShortTumor_Sample)))})
   
-  output$cancerCount<-renderText({paste("Number of Cancers Represented:", length(unique(kandothAnno2$Cancer))-1)}) #-1 accounts for "NA"
+  output$cancerCount<-renderText({paste("Number of Cancers Represented:", length(unique(kandothAnno2$Cancer)))}) 
   
   output$cancerSummary<-renderDataTable({count_(kandothAnno2, 'Cancer')})
   
